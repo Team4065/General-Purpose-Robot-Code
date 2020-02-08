@@ -5,7 +5,24 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-#include "commands/ExampleCommand.h"
+#pragma once
 
-ExampleCommand::ExampleCommand(ExampleSubsystem* subsystem)
-    : m_subsystem{subsystem} {}
+/**
+ * The Constants header provides a convenient place for teams to hold robot-wide
+ * numerical or boolean constants.  This should not be used for any other
+ * purpose.
+ *
+ * It is generally a good idea to place constants into subsystem- or
+ * command-specific namespaces within this header, which can then be used where
+ * they are needed.
+ */
+
+/*
+ CAN ID Standards
+
+Left drivetrain motors: 1 - 3
+Right drivetrain motors: 4 - 6
+
+
+
+*/
