@@ -6,6 +6,7 @@
 /*----------------------------------------------------------------------------*/
 
 //TODO invert encoder reading so that forward is positive.
+//TODO find the smallest amounts of includes necessary in order to decrease compile time (hopefully).
 
 #pragma once
  
