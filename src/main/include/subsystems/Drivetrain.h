@@ -38,15 +38,15 @@ class Drivetrain : public frc2::SubsystemBase {
     this->rightMotorCount = rightMotorCount;
 
     for(int i = 1; i < leftMotorCount; ++i){
-      leftMotors[i]->Follow(leftMotors[0]);
+      leftMotors[i]->Follow(*leftMotors[0]);
     }
 
     for(int i = 1; i < leftMotorCount; ++i){
-      rightMotors[i]->Follow(rightMotors[0]);
+      rightMotors[i]->Follow(*rightMotors[0]);
     }
 
-    leftMotors[0].SetInverted(!flipForwardDirection);//Makes it move forward instead of spin
-    rightMotors[0].SetInverted(flipForwardDirection);
+    leftMotors[0]->SetInverted(!flipForwardDirection);//Makes it move forward instead of spin
+    rightMotors[0]->SetInverted(flipForwardDirection);
 
   }
 
