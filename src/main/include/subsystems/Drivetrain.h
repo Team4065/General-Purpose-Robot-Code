@@ -5,6 +5,8 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
+//TODO invert encoder reading so that forward is positive.
+
 #pragma once
  
 
@@ -20,7 +22,9 @@
 template <class MotorControllerType>
 class Drivetrain : public frc2::SubsystemBase {
  public:
-  Drivetrain(int leftMotorCount, int rightMotorCount){
+ 
+ //Max motor count per side: 3
+  Drivetrain(int leftMotorCount, int rightMotorCount, bool flipForwardDirection = false){
     for(int i = 0; i < leftMotorCount; ++i){
       leftMotors[i] = new MotorControllerType(1 + i);
     }
@@ -31,6 +35,18 @@ class Drivetrain : public frc2::SubsystemBase {
 
     this->leftMotorCount = leftMotorCount;
     this->rightMotorCount = rightMotorCount;
+
+    for(int i = 1; i < leftMotorCount; ++i){
+      leftMotors[i]->Follow(leftMotors[0]);
+    }
+
+    for(int i = 1; i < leftMotorCount; ++i){
+      rightMotors[i]->Follow(rightMotors[0]);
+    }
+
+    leftMotors[0].SetInverted(!flipForwardDirection);//Makes it move forward instead of spin
+    rightMotors[0].SetInverted(flipForwardDirection);
+
   }
 
   /**
@@ -171,9 +187,6 @@ class Drivetrain : public frc2::SubsystemBase {
 
 
 
-
-
-
   //UpdatePIDValues variant for WPI_TalonSRX class
   template <class T = MotorControllerType>
   std::enable_if_t<std::is_same<T, WPI_TalonSRX>::value> UpdatePIDValues(MotorControllerType* motor){
@@ -210,4 +223,6 @@ class Drivetrain : public frc2::SubsystemBase {
     PIDController.SetD(kD_position, PIDSlot::Position);
     PIDController.SetFF(kFF_position, PIDSlot::Position);
   }
+
+
 };
