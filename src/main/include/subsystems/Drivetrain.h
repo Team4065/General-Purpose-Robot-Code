@@ -20,210 +20,52 @@
 #include "rev/CANSparkMax.h"
 
 
-template <class MotorControllerType>
 class Drivetrain : public frc2::SubsystemBase {
- public:
- 
- //Max motor count per side: 3
-  Drivetrain(int leftMotorCount, int rightMotorCount, bool flipForwardDirection = false){
-    for(int i = 0; i < leftMotorCount; ++i){
-      leftMotors[i] = new MotorControllerType(1 + i);
-    }
-
-    for(int i = 0; i < leftMotorCount; ++i){
-      rightMotors[i] = new MotorControllerType(3 + i);
-    }
-
-    this->leftMotorCount = leftMotorCount;
-    this->rightMotorCount = rightMotorCount;
-
-    for(int i = 1; i < leftMotorCount; ++i){
-      leftMotors[i]->Follow(*leftMotors[0]);
-    }
-
-    for(int i = 1; i < leftMotorCount; ++i){
-      rightMotors[i]->Follow(*rightMotors[0]);
-    }
-
-    leftMotors[0]->SetInverted(!flipForwardDirection);//Makes it move forward instead of spin
-    rightMotors[0]->SetInverted(flipForwardDirection);
-
-  }
-
-  /**
-   * Will be called periodically whenever the CommandScheduler runs.
-   */
-  void Periodic(){
-    for(int i = 0; i < leftMotorCount; ++i){
-      SetMotor(leftMotors[i], true);
-    }
-
-    for(int i = 0; i < leftMotorCount; ++i){
-      SetMotor(rightMotors[i], false);
-    }
-  }
-
-  double leftTarget = 0;
-  double rightTarget = 0;
-
-  enum ControlMode {
-    PERCENT,
-    VELOCITY,
-    POSITION
-  } controlMode;
-
-  double kP_velocity, kD_velocity, kFF_velocity = 0;
-  double kP_position, kD_position, kFF_position = 0;
-
-  void SetVelocityPIDF(double kP, double kD, double kFF){
-    kP_velocity = kP;
-    kD_velocity = kD;
-    kFF_velocity = kFF;
-
-    for(int i = 0; i < leftMotorCount; ++i){
-      UpdatePIDValues(leftMotors[i]);
-    }
-
-    for(int i = 0; i < leftMotorCount; ++i){
-      UpdatePIDValues(rightMotors[i]);
-    }
-  }
-
-  void SetPositionPIDF(double kP, double kD, double kFF){
-    kP_velocity = kP;
-    kD_velocity = kD;
-    kFF_velocity = kFF;
-
-    for(int i = 0; i < leftMotorCount; ++i){
-      UpdatePIDValues(leftMotors[i]);
-    }
-
-    for(int i = 0; i < leftMotorCount; ++i){
-      UpdatePIDValues(rightMotors[i]);
-    }
-  }
-
  private:
+   // Components (e.g. motor controllers and sensors) should generally be
+   // declared private and exposed only through public methods.
+   double kP_velocity_, kD_velocity_, kFF_velocity_ = 0;
+   double kP_position_, kD_position_, kFF_position_ = 0;
 
-  unsigned short leftMotorCount, rightMotorCount;
-  MotorControllerType* leftMotors[3];
-  MotorControllerType* rightMotors[3];
+ public:
 
-  enum PIDSlot{
-    Velocity,
-    Position
-  };
+   Drivetrain();
 
+   virtual void Periodic();
 
-  //SetMotor variant for WPI_TalonSRX class
-  template <class T = MotorControllerType>
-  std::enable_if_t<std::is_same<T, WPI_TalonSRX>::value> SetMotor(MotorControllerType* motor, bool isLeft){
+   double leftTarget, rightTarget = 0.0;
 
-    double outputValue = 0;
-    if(isLeft)
-      outputValue = leftTarget;
-    else
-      outputValue = rightTarget;
+   const double &kP_velocity = kP_velocity_;
+   const double &kD_velocity = kD_velocity_;
+   const double &kFF_velocity = kFF_velocity_;
 
-    switch(controlMode){
-      case ControlMode::PERCENT:
-        motor->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, outputValue);
-        break;
-      case ControlMode::VELOCITY:
-        motor->Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, outputValue);
-        break;
-      case ControlMode::POSITION:
-        motor->Set(ctre::phoenix::motorcontrol::ControlMode::Position, outputValue);
-        break;
-    }
+   const double &kP_position = kP_position_;
+   const double &kD_position = kD_position_;
+   const double &kFF_position = kFF_position_;
 
-  }
+   enum ControlMode {
+      PERCENT,
+      VELOCITY,
+      POSITION
+   } controlMode;
 
-  //SetMotor variant for TalonSRX class
-  template <class T = MotorControllerType>
-  std::enable_if_t<std::is_same<T, TalonSRX>::value> SetMotor(MotorControllerType* motor, bool isLeft){
+   enum PIDSlot{
+      Velocity,
+      Position
+   };
 
-    double outputValue = 0;
-    if(isLeft)
-      outputValue = leftTarget;
-    else
-      outputValue = rightTarget;
+   //Sets kP_velocity and updates the motorcontrollers
+   virtual void SetP_velocity(double);
+   //Sets kD_velocity and updates the motorcontrollers
+   virtual void SetD_velocity(double);
+   //Sets kFF_velocity and updates the motorcontrollers
+   virtual void SetFF_velocity(double);
 
-    switch(controlMode){
-      case ControlMode::PERCENT:
-        motor->Set(ctre::phoenix::motorcontrol::ControlMode::PercentOutput, outputValue);
-        break;
-      case ControlMode::VELOCITY:
-        motor->Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, outputValue);
-        break;
-      case ControlMode::POSITION:
-        motor->Set(ctre::phoenix::motorcontrol::ControlMode::Position, outputValue);
-        break;
-    }
-
-  }
-
-  //SetMotor variant for CANSparkMax class
-  template <class T = MotorControllerType>
-  std::enable_if_t<std::is_same<T, rev::CANSparkMax>::value> SetMotor(MotorControllerType* motor, bool isLeft){
-
-    double outputValue = 0;
-    if(isLeft)
-      outputValue = leftTarget;
-    else
-      outputValue = rightTarget;
-
-    switch(controlMode){
-      case ControlMode::PERCENT:
-        motor->Set(outputValue);
-        break;
-      case ControlMode::VELOCITY:
-        //motor->GetPIDController().SetReference(outputValue, );
-        break;
-      case ControlMode::POSITION:
-        break;
-    }
-
-  }
-
-
-
-  //UpdatePIDValues variant for WPI_TalonSRX class
-  template <class T = MotorControllerType>
-  std::enable_if_t<std::is_same<T, WPI_TalonSRX>::value> UpdatePIDValues(MotorControllerType* motor){
-    motor->Config_kP(kP_velocity, PIDSlot::Velocity);
-    motor->Config_kD(kD_velocity, PIDSlot::Velocity);
-    motor->Config_kF(kFF_velocity, PIDSlot::Velocity);
-
-    motor->Config_kP(kP_velocity, PIDSlot::Position);
-    motor->Config_kD(kD_position, PIDSlot::Position);
-    motor->Config_kF(kFF_position, PIDSlot::Position);
-  }
-
-  //UpdatePIDValues variant for TalonSRX class
-  template <class T = MotorControllerType>
-  std::enable_if_t<std::is_same<T, TalonSRX>::value> UpdatePIDValues(MotorControllerType* motor){
-    motor->Config_kP(kP_velocity, PIDSlot::Velocity);
-    motor->Config_kD(kD_velocity, PIDSlot::Velocity);
-    motor->Config_kF(kFF_velocity, PIDSlot::Velocity);
-
-    motor->Config_kP(kP_velocity, PIDSlot::Position);
-    motor->Config_kD(kD_position, PIDSlot::Position);
-    motor->Config_kF(kFF_position, PIDSlot::Position);
-  }
-
-  //UpdatePIDValues variant for CANSparkMax class
-  template <class T = MotorControllerType>
-  std::enable_if_t<std::is_same<T, rev::CANSparkMax>::value> UpdatePIDValues(MotorControllerType* motor){
-    rev::CANPIDController PIDController = &motor->GetPIDController();
-    PIDController.SetP(kP_velocity, PIDSlot::Velocity);
-    PIDController.SetD(kD_velocity, PIDSlot::Velocity);
-    PIDController.SetFF(kFF_velocity, PIDSlot::Velocity);
-    
-    PIDController.SetP(kP_velocity, PIDSlot::Position);
-    PIDController.SetD(kD_position, PIDSlot::Position);
-    PIDController.SetFF(kFF_position, PIDSlot::Position);
-  }
-
-
+   //Sets kP_position and updates the motorcontrollers
+   virtual void SetP_position(double);
+   //Sets kD_position and updates the motorcontrollers
+   virtual void SetD_position(double);
+   //Sets kF_position and updates the motorcontrollers
+   virtual void SetFF_position(double);
 };
+

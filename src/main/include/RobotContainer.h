@@ -8,10 +8,9 @@
 #pragma once
 
 #include <frc2/command/Command.h>
+#include <frc/XboxController.h>
 
-#include <ctre/phoenix.h>
-
-#include "subsystems/Drivetrain.h"
+#include "subsystems/TalonSRX_Drivetrain.h"
 #include "commands/TankDrive.h"
 
 /**
@@ -28,6 +27,13 @@ class RobotContainer {
  private:
   // The robot's subsystems and commands are defined here...
 
-  Drivetrain<WPI_TalonSRX> drivetrain { 2, 2 };
+  // TalonSRX_Drivetrain *drivetrain { 3, 3, true, false };
+  TalonSRX_Drivetrain *drivetrain = new TalonSRX_Drivetrain(3, 3, true);
+
+  frc::XboxController *controller { 0 };
+
+
   void ConfigureButtonBindings();
 };
+
+//TalonSRX_Drivetrain *drivetrain = new TalonSRX_Drivetrain(3, 3, true);

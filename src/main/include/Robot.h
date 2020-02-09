@@ -4,7 +4,7 @@
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
-//TODO
+//TODO Make a branch, or have someone else make a branch, of this that has one drivetrain class but with a macro that selects which type gets used
 
 
 #pragma once

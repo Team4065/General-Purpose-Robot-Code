@@ -9,8 +9,9 @@
 
 RobotContainer::RobotContainer(){
   // Initialize all of your commands and subsystems here
-
   // Configure the button bindings
+  drivetrain->SetDefaultCommand(TankDrive(drivetrain, controller));
+
   ConfigureButtonBindings();
 }
 

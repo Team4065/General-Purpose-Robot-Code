@@ -7,10 +7,17 @@
 
 #pragma once
 
+#define DRIVETRAIN_TYPE_NOT_SPECIFIED false
+#if DRIVETRAIN_TYPE_NOT_SPECIFIED
+#error The type of drivetrain needs to be specified. \
+To do this replace all instances of Drivetrain in this file with the used Drivetrain variant and change the macro above.
+#endif
+
 #include <frc2/command/CommandBase.h>
 #include <frc2/command/CommandHelper.h>
+#include <frc/XboxController.h>
 
-#include "subsystems/Drivetrain.h"
+#include "subsystems/TalonSRX_Drivetrain.h"
 
 /**
  * An example command.
@@ -22,8 +29,10 @@
 class TankDrive
     : public frc2::CommandHelper<frc2::CommandBase, TankDrive> {
  public:
-  template <class MotorControllerType>
-  TankDrive(Drivetrain<MotorControllerType>&);
+  //Uses a Drivetrain pointer so that classes that inherit Drivetrain can be used
+  //Uses an XboxController pointer to lower runtime lag
+
+  TankDrive(TalonSRX_Drivetrain*, frc::XboxController*);
 
   void Initialize() override;
 
@@ -32,4 +41,7 @@ class TankDrive
   void End(bool interrupted) override;
 
   bool IsFinished() override;
+
+  TalonSRX_Drivetrain *drivetrain;
+  frc::XboxController *controller;
 };

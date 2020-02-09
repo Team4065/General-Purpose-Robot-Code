@@ -7,17 +7,25 @@
 
 #include "commands/TankDrive.h"
 
-template <typename MotorControllerType>
-TankDrive::TankDrive(Drivetrain<MotorControllerType>& drivetrain) {
+
+
+TankDrive::TankDrive(TalonSRX_Drivetrain* drivetrain, frc::XboxController* contoller) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements({drivetrain});
+  this->drivetrain = drivetrain;
+  this->controller = controller;
 }
 
 // Called when the command is initially scheduled.
-void TankDrive::Initialize() {}
+void TankDrive::Initialize() {
+  drivetrain->controlMode = Drivetrain::ControlMode::PERCENT;
+}
 
 // Called repeatedly when this Command is scheduled to run
-void TankDrive::Execute() {}
+void TankDrive::Execute() {
+  drivetrain->leftTarget = controller->GetY(frc::GenericHID::kLeftHand);
+  drivetrain->rightTarget = controller->GetY(frc::GenericHID::kRightHand);
+}
 
 // Called once the command ends or is interrupted.
 void TankDrive::End(bool interrupted) {}
