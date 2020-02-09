@@ -16,6 +16,10 @@ void Drivetrain::SetP_velocity(double P){
     this->kP_velocity_ = P;
 }
 
+void Drivetrain::SetI_velocity(double I){
+    this->kI_velocity_ = I;
+}
+
 void Drivetrain::SetD_velocity(double D){
     this->kD_velocity_ = D;
 }
@@ -30,10 +34,24 @@ void Drivetrain::SetP_position(double P){
     this->kP_position_ = P;
 }
 
+void Drivetrain::SetI_position(double I){
+    this->kI_position_ = I;
+}
+
 void Drivetrain::SetD_position(double D){
     this->kD_position_ = D;
 }
 
 void Drivetrain::SetFF_position(double FF){
     this->kFF_position_ = FF;
+}
+
+
+
+void Drivetrain::SetMaxVelocity(double MaxVelocity){
+    this->kMaxVelocity_ = MaxVelocity;
+}
+
+void Drivetrain::SetMaxAcceleration(double MaxAcceleration){
+    this->kMaxAcceleration_ = MaxAcceleration;
 }

@@ -32,14 +32,7 @@ using namespace ctre::phoenix::motorcontrol::can;
  * 
  */
 class TalonSRX_Drivetrain : public Drivetrain {
- private:
-   // Components (e.g. motor controllers and sensors) should generally be
-   // declared private and exposed only through public methods.
-   double kP_velocity_, kD_velocity_, kFF_velocity_ = 0;
-   double kP_position_, kD_position_, kFF_position_ = 0;
-
  public:
-
    TalonSRX_Drivetrain(int leftMotorCount, int rightMotorCount, bool invertForward = false,  bool areSlavesVictorSPX = false);
    // TalonSRX_Drivetrain(int leftMotorCount, int rightMotorCount, bool invertForward,  bool areSlavesVictorSPX);
 
@@ -61,6 +54,4 @@ class TalonSRX_Drivetrain : public Drivetrain {
    void SetD_position(double) override;
    //Sets kF_position and updates the motorcontrollers
    void SetFF_position(double) override;
-
-
 };

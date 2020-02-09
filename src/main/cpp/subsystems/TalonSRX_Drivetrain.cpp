@@ -42,7 +42,30 @@ TalonSRX_Drivetrain::TalonSRX_Drivetrain(int leftMotorCount, int rightMotorCount
 }
 
 void TalonSRX_Drivetrain::Periodic() {
+    switch(controlMode){
+        case Drivetrain::ControlMode::PERCENT:
+            leftMaster->Set(leftTarget);
+            rightMaster->Set(rightTarget);
+            break;
+        case Drivetrain::ControlMode::VELOCITY:
+            //selects the proper PID values
+            leftMaster->SelectProfileSlot(Drivetrain::PIDSlot::Velocity, 0);
+            rightMaster->SelectProfileSlot(Drivetrain::PIDSlot::Velocity, 0);
 
+            //Updates the PID target
+            leftMaster->Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, leftTarget);
+            rightMaster->Set(ctre::phoenix::motorcontrol::ControlMode::Velocity, rightTarget);
+            break;
+        case Drivetrain::ControlMode::POSITION:
+            //selects the proper PID values
+            leftMaster->SelectProfileSlot(Drivetrain::PIDSlot::Position, 0);
+            rightMaster->SelectProfileSlot(Drivetrain::PIDSlot::Position, 0);
+            
+            //Updates the PID target
+            leftMaster->Set(ctre::phoenix::motorcontrol::ControlMode::Position, leftTarget);
+            rightMaster->Set(ctre::phoenix::motorcontrol::ControlMode::Position, rightTarget);
+            break;
+    }
 }
 
 

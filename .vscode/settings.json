@@ -95,6 +95,7 @@
     "bitset": "cpp",
     "unordered_set": "cpp",
     "random": "cpp",
-    "future": "cpp"
+    "future": "cpp",
+    "*.inc": "cpp"
   }
 }
