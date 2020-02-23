@@ -8,6 +8,17 @@
 #include "subsystems/TalonSRX_Drivetrain.h"
 
 TalonSRX_Drivetrain::TalonSRX_Drivetrain(int leftMotorCount, int rightMotorCount, bool invertForward, bool areSlavesVictorSPX){
+    //error checking
+    if(leftMotorCount == 0){
+        throw "Left motor count must be greater than 0.";
+        return;
+    }
+    
+    if(rightMotorCount == 0){
+        throw "Right motor count must be greater than 0.";
+        return;
+    }
+
 
     leftMaster = new WPI_TalonSRX(1);//ID 1
     rightMaster = new WPI_TalonSRX(4);//ID 4
@@ -76,6 +87,12 @@ void TalonSRX_Drivetrain::SetP_velocity(double P){
     this->rightMaster->Config_kP(TalonSRX_Drivetrain::PIDSlot::Velocity, P);
 }
 
+void TalonSRX_Drivetrain::SetI_velocity(double I){
+    this->kI_velocity_ = I;
+    this->leftMaster->Config_kI(TalonSRX_Drivetrain::PIDSlot::Velocity, I);
+    this->rightMaster->Config_kI(TalonSRX_Drivetrain::PIDSlot::Velocity, I);
+}
+
 void TalonSRX_Drivetrain::SetD_velocity(double D){
     this->kD_velocity_ = D;
     this->leftMaster->Config_kD(TalonSRX_Drivetrain::PIDSlot::Velocity, D);
@@ -94,6 +111,12 @@ void TalonSRX_Drivetrain::SetP_position(double P){
     this->kP_position_ = P;
     this->leftMaster->Config_kP(TalonSRX_Drivetrain::PIDSlot::Position, P);
     this->rightMaster->Config_kP(TalonSRX_Drivetrain::PIDSlot::Position, P);
+}
+
+void TalonSRX_Drivetrain::SetI_position(double I){
+    this->kI_position_ = I;
+    this->leftMaster->Config_kI(TalonSRX_Drivetrain::PIDSlot::Position, I);
+    this->rightMaster->Config_kI(TalonSRX_Drivetrain::PIDSlot::Position, I);
 }
 
 void TalonSRX_Drivetrain::SetD_position(double D){

@@ -9,7 +9,7 @@
 
 
 
-TankDrive::TankDrive(TalonSRX_Drivetrain* drivetrain, frc::XboxController* contoller) {
+TankDrive::TankDrive(DrivetrainType* drivetrain, frc::XboxController* contoller) {
   // Use addRequirements() here to declare subsystem dependencies.
   AddRequirements({drivetrain});
   this->drivetrain = drivetrain;

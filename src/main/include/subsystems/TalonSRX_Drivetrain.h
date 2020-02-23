@@ -33,25 +33,31 @@ using namespace ctre::phoenix::motorcontrol::can;
  */
 class TalonSRX_Drivetrain : public Drivetrain {
  public:
-   TalonSRX_Drivetrain(int leftMotorCount, int rightMotorCount, bool invertForward = false,  bool areSlavesVictorSPX = false);
-   // TalonSRX_Drivetrain(int leftMotorCount, int rightMotorCount, bool invertForward,  bool areSlavesVictorSPX);
+  TalonSRX_Drivetrain(int leftMotorCount, int rightMotorCount, bool invertForward = false,  bool areSlavesVictorSPX = false);
+  // TalonSRX_Drivetrain(int leftMotorCount, int rightMotorCount, bool invertForward,  bool areSlavesVictorSPX);
 
-   void Periodic() override;
+  void Periodic() override;
+  
+  //Sets kP_velocity and updates the motorcontrollers
+  void SetP_velocity(double) override;
+  //Sets kI_velocity and updates the motorcontrollers
+  void SetI_velocity(double) override;
+  //Sets kD_velocity and updates the motorcontrollers
+  void SetD_velocity(double) override;
+  //Sets kFF_velocity and updates the motorcontrollers
+  void SetFF_velocity(double) override;
 
-   WPI_TalonSRX *leftMaster, *rightMaster;
-   BaseMotorController *leftSlaves[2], *rightSlaves[2];
+  //Sets kP_position and updates the motorcontrollers
+  void SetP_position(double) override;
+  //Sets kI_velocity and updates the motorcontrollers
+  void SetI_position(double) override;
+  //Sets kD_position and updates the motorcontrollers
+  void SetD_position(double) override;
+  //Sets kF_position and updates the motorcontrollers
+  void SetFF_position(double) override;
 
-   //Sets kP_velocity and updates the motorcontrollers
-   void SetP_velocity(double) override;
-   //Sets kD_velocity and updates the motorcontrollers
-   void SetD_velocity(double) override;
-   //Sets kFF_velocity and updates the motorcontrollers
-   void SetFF_velocity(double) override;
-
-   //Sets kP_position and updates the motorcontrollers
-   void SetP_position(double) override;
-   //Sets kD_position and updates the motorcontrollers
-   void SetD_position(double) override;
-   //Sets kF_position and updates the motorcontrollers
-   void SetFF_position(double) override;
+ private:
+  WPI_TalonSRX *leftMaster, *rightMaster;  //The motor controllers that act as masters
+  BaseMotorController *leftSlaves[2], *rightSlaves[2]; //The motor controllers that act as slaves
+                                                        //Slaves follow the masters
 };
