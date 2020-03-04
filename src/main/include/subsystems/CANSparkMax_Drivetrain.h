@@ -42,7 +42,7 @@ class CANSparkMax_Drivetrain : public Drivetrain {
  private:
 
   rev::CANSparkMax *leftMaster, *rightMaster; //These are the motor controllers that act as masters for the drivetrain
-  rev::CANPIDController *leftPID, *rightPID;  //These allow access to inbuilt closed loops in the motor controllers
+  rev::CANPIDController leftPID(),rightPID();  //These allow access to inbuilt closed loops in the motor controllers
   rev::CANSparkMax *leftSlaves[2], *rightSlaves[2];
 
   // Components (e.g. motor controllers and sensors) should generally be
